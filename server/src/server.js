@@ -7,7 +7,7 @@ const app = require("./app");
 const { mongoConnect } = require("./services/mongo");
 
 const PORT = process.env.PORT || 8000; //To avoid conflict with the 3000 that's using React
-const IP_ADDRESS = process.env.IP_ADDRESS || '192.168.137.1'; 
+const IP_ADDRESS = process.env.IP_ADDRESS || 'localhost'; 
 
 const server = http.createServer(app);
 
