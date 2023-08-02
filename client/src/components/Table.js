@@ -2,7 +2,7 @@ import { Fragment, useEffect, useState } from "react";
 import RowInfo from "./RowInfo";
 import useUsersContext from "../hooks/use-users-context";
 
-function Table({ data, config, keyFn, loader }) {
+function Table({ data, config, keyFn, loader, showInfo }) {
   const [expandedIndex, setExpandedIndex] = useState(-1);
   const { setPage } = useUsersContext();
 
@@ -39,7 +39,7 @@ function Table({ data, config, keyFn, loader }) {
       );
     });
 
-    const content = isExpanded && <RowInfo config={config} user={row} />;
+    const content = isExpanded && showInfo && <RowInfo config={config} user={row} />;
 
     return (
       <Fragment key={keyFn(row)}>
