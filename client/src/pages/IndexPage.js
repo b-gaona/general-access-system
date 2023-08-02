@@ -4,8 +4,19 @@ import MenuCard from "../components/MenuCard";
 import register from "../img/register.webp";
 import students from "../img/students.webp";
 import arriveStatus from "../img/arriveStatus.webp";
+import { useEffect } from "react";
+import useUsersContext from "../hooks/use-users-context";
 
-function IndexPage(params) {
+function IndexPage() {
+  const { setFilteredUsers, setTerm, setSearchTerm } = useUsersContext();
+
+  useEffect(() => {
+    setFilteredUsers([]);
+    setTerm("");
+    setSearchTerm("");
+    // eslint-disable-next-line
+  }, []);
+
   return (
     <div className="flex flex-col justify-between min-h-screen">
       <Header></Header>
@@ -15,17 +26,17 @@ function IndexPage(params) {
           alt="Registro de usuarios"
           heading="Registro de usuarios"
           to="/register"
-          ></MenuCard>
+        ></MenuCard>
         <MenuCard
           img={students}
           alt="Tabla de usuarios"
           heading="Tabla de usuarios"
           to="/users"
-          ></MenuCard>
+        ></MenuCard>
         <MenuCard
           img={arriveStatus}
-          alt="Entrada y salida de usuarios"
-          heading="Entrada y salida de usuarios"
+          alt="Entrada de usuarios"
+          heading="Entrada de usuarios"
           to="/status"
         ></MenuCard>
       </div>
