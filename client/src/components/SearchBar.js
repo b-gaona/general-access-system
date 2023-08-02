@@ -3,31 +3,136 @@ import Button from "./Button";
 import Input from "./Input";
 import SearchItem from "./SearchItem";
 import useUsersContext from "../hooks/use-users-context";
+import axios from "axios";
 
-function SearchBar() {
-  const { page, setPage, searchTerm, setSearchTerm, term, setTerm } =
-    useUsersContext();
+function SearchBar({ collection }) {
+  const {
+    page,
+    setPage,
+    searchTerm,
+    setSearchTerm,
+    term,
+    setTerm,
+    dateRange,
+    setFilteredUsers,
+    filteredUsers,
+    setIsLoading,
+    setDate,
+  } = useUsersContext();
   const [show, setShow] = useState(false);
 
   const handleSearchTermChange = ({ text }) => {
     setSearchTerm(text);
   };
 
-  const handleClick = (evt) => {
+  const handleClick = async (evt) => {
     evt.preventDefault();
     setTerm(searchTerm);
     setSearchTerm("");
     setPage(1);
-    setShow(true);
+
+    if (searchTerm) {
+      setShow(true);
+    } else {
+      //Doesn't have a searchTerm, so don't show and filter when it's necessary between dates
+      onClose();
+
+      const [initialDate, endDate] = dateRange;
+      const object = {};
+
+      if (initialDate || endDate) {
+        if (initialDate && endDate) {
+          object.minDate = initialDate;
+          object.maxDate = endDate;
+        } else if (initialDate && !endDate) {
+          object.minDate = initialDate;
+        } else if (endDate && !initialDate) {
+          object.maxDate = endDate;
+        }
+        setDate("date");
+      } else {
+        setDate("");
+      }
+
+      try {
+        const before = filteredUsers;
+        setFilteredUsers([]);
+        setIsLoading(true);
+        const res = await axios.post(
+          `http://localhost:8000/v1/${collection}/get/dates?page=${page}&limit=15`,
+          object
+        );
+
+        setTimeout(() => {
+          if (res.data) {
+            setFilteredUsers(res.data);
+          } else {
+            setFilteredUsers(before);
+          }
+          setIsLoading(false);
+        }, 150);
+      } catch (error) {
+        console.log(error);
+        setFilteredUsers([]);
+      } finally {
+        setIsLoading(false);
+      }
+    }
   };
 
-  const onClose = () => {
+  const onClose = async () => {
     setShow(false);
     setTerm("");
+
+    const [initialDate, endDate] = dateRange;
+    const object = {};
+
+    if (initialDate || endDate) {
+      if (initialDate && endDate) {
+        object.minDate = initialDate;
+        object.maxDate = endDate;
+      } else if (initialDate && !endDate) {
+        object.minDate = initialDate;
+      } else if (endDate && !initialDate) {
+        object.maxDate = endDate;
+      }
+      setDate("date");
+    } else {
+      setDate("");
+    }
+
+    try {
+      const before = filteredUsers;
+      setFilteredUsers([]);
+      setIsLoading(true);
+      const res = await axios.post(
+        `http://localhost:8000/v1/${collection}/get/dates?page=${page}&limit=15`,
+        object
+      );
+
+      setTimeout(() => {
+        if (res.data) {
+          setFilteredUsers(res.data);
+        } else {
+          setFilteredUsers(before);
+        }
+        setIsLoading(false);
+      }, 150);
+    } catch (error) {
+      console.log(error);
+      setFilteredUsers([]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const renderedSearchItems = (
-    <SearchItem searchTerm={term} page={page} onClose={onClose} />
+    <SearchItem
+      searchTerm={term}
+      collection={collection}
+      page={page}
+      onClose={onClose}
+    />
   );
 
   return (
