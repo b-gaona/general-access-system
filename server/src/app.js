@@ -5,7 +5,7 @@ const morgan = require("morgan");
 const csv = require("csv-parser");
 const fs = require("fs");
 const multer = require("multer");
-const { saveUserByCSV } = require("./models/user.model");
+const { saveUserByCSV, deleteUsersByCSV } = require("./models/user.model");
 
 const path = require("path");
 
@@ -43,8 +43,23 @@ app.post("/upload", upload.single("file"), (req, res) => {
       fs.unlink(req.file.path, (err) => {
         if (err) console.error(err);
       });
+      return res.status(200).json(users);
+    });
+});
 
-      console.log(users);
+app.post("/remove", upload.single("file"), (req, res) => {
+  const results = [];
+
+  fs.createReadStream(req.file.path)
+    .pipe(csv())
+    .on("data", (data) => results.push(data))
+    .on("end", async () => {
+      const users = await deleteUsersByCSV(results);
+      // Remove the uploaded file
+      console.log("File deleted if exists");
+      fs.unlink(req.file.path, (err) => {
+        if (err) console.error(err);
+      });
       return res.status(200).json(users);
     });
 });
