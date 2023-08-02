@@ -7,6 +7,7 @@ const {
   httpGetUserPlate,
   httpDeleteUserById,
   httpUpdateUserById,
+  httpAssignCardToUser,
 } = require("./user.controller");
 
 const userRouter = express.Router();
@@ -16,6 +17,7 @@ userRouter.get("/get/:keyword", httpGetUserByKeyword);
 userRouter.get("/get/plate/:plate", httpGetUserPlate);
 
 userRouter.post("/add", httpAddUser);
+userRouter.post("/card", httpAssignCardToUser);
 
 userRouter.put("/update/:id", httpUpdateUserById);
 
