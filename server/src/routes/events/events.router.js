@@ -1,9 +1,10 @@
 const express = require("express");
 
-const { httpGetEventChanges } = require("./events.controller");
+const { httpGetEventChanges, httpGetCredentialChanges } = require("./events.controller");
 
 const eventRouter = express.Router();
 
 eventRouter.get("/", httpGetEventChanges);
+eventRouter.get("/credential", httpGetCredentialChanges);
 
 module.exports = eventRouter;
