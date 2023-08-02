@@ -3,6 +3,7 @@ const { getAreaById } = require("./area.model");
 const { getCareerById } = require("./career.model");
 const { getRoleById } = require("./role.model");
 const { getDepartmentById } = require("./department.model");
+const { getCredentialById } = require("./credential.model");
 
 async function getAllUsers({ skip, limit }) {
   return await User.find(
@@ -12,12 +13,14 @@ async function getAllUsers({ skip, limit }) {
     }
   )
     .skip(skip) //The number of elements to skip
-    .limit(limit); //The number of elements to show
+    .limit(limit) //The number of elements to show
+    .sort({ date: -1 });
 }
 
 async function saveUser(user) {
   const role = await getRoleById(user.role);
 
+  user.name = user.name.toUpperCase();
   if (role.role === "Alumno") {
     const { department, ...rest } = user;
     const career = await getCareerById(user.career);
@@ -76,7 +79,6 @@ async function saveUserByCSV(users) {
       }
 
       const selectedUser = await User.findOne({ plate });
-
       if (selectedUser) {
         return null;
       }
@@ -96,15 +98,48 @@ async function saveUserByCSV(users) {
     })
   );
 
+  let res = [];
   try {
     const filteredArray = results.filter((item) => item !== null);
     if (filteredArray.length > 0) {
-      return await User.insertMany(filteredArray);
+      res = await User.insertMany(filteredArray, { ordered: false });
+      console.log(res);
+      if (filteredArray.length === results.length) {
+        console.log("complete");
+        return { status: "complete", data: res };
+      } else {
+        console.log("incomplete");
+        return { status: "incomplete", data: res };
+      }
     } else {
-      return null;
+      console.log("empty");
+      return { status: "empty", data: res };
     }
   } catch (error) {
-    return null;
+    return { status: "error", data: res };
+  }
+}
+
+async function deleteUsersByCSV(users) {
+  console.log(users);
+  const results = users.map((user) => {
+    console.log(Object.entries(user));
+    return user.plate;
+  });
+
+  let res = [];
+  try {
+    const filteredArray = results.filter((item) => item !== null);
+    console.log(filteredArray);
+    if (filteredArray.length > 0) {
+      res = await User.deleteMany({plate: {$in: filteredArray}});
+      console.log(res);
+    } else {
+      console.log("empty");
+      return { status: "empty", data: res };
+    }
+  } catch (error) {
+    return { status: "error", data: res };
   }
 }
 
@@ -120,7 +155,7 @@ async function getUserByKeyword({ keyword, skip, limit }) {
     ],
   };
 
-  return await User.find(query).skip(skip).limit(limit);
+  return await User.find(query).skip(skip).limit(limit).sort({ date: -1 });
 }
 
 async function getUserPlate(keyword) {
@@ -160,6 +195,15 @@ async function updateUserById(id, user) {
   return await User.findByIdAndUpdate({ _id: id }, user, { new: true });
 }
 
+async function assignCardToUser(userID, cardID) {
+  const credential = await getCredentialById(cardID);
+  return await User.findByIdAndUpdate(
+    { _id: userID },
+    { card_id: credential },
+    { new: true }
+  );
+}
+
 module.exports = {
   getAllUsers,
   saveUser,
@@ -168,4 +212,9 @@ module.exports = {
   deleteUserById,
   updateUserById,
   saveUserByCSV,
+  deleteUsersByCSV,
+  assignCardToUser,
 };
+
+//TODO: If the insertMany has errors, send a message that says that it has inserted rows, not all, but some of them.
+//FIXME: Do the same as above but with the insertDelete
