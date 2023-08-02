@@ -2,6 +2,7 @@ const { areaSchema } = require("./area.mongo");
 const { careerSchema } = require("./career.mongo");
 const { departmentSchema } = require("./department.mongo");
 const { roleSchema } = require("./role.mongo");
+const { credentialSchema } = require("./credential.mongo");
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
@@ -41,11 +42,18 @@ const userSchema = new mongoose.Schema({
     required: true,
   },
   card_id: {
-    type: String,
+    type: credentialSchema,
     required: false,
-    unique: true,
   },
 });
+
+userSchema.index(
+  { "card_id.credential": 1 },
+  {
+    unique: true,
+    partialFilterExpression: { "card_id.credential": { $exists: true } },
+  }
+);
 
 module.exports = {
   User: mongoose.model("User", userSchema),
