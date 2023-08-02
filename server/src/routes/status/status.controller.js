@@ -1,4 +1,10 @@
-const { getAllStatus, saveStatus } = require("../../models/status.model");
+const {
+  getAllStatus,
+  saveStatus,
+  getStatusByKeyword,
+  getStatusToExport,
+  getStatusByDate,
+} = require("../../models/status.model");
 const { getPagination } = require("../../services/query");
 
 async function httpGetAllStatus(req, res) {
@@ -9,10 +15,10 @@ async function httpGetAllStatus(req, res) {
 
 async function httpAddStatus(req, res) {
   try {
-    const { plate } = req.query;
+    const { cardID, location } = req.query;
 
-    const record = await saveStatus(plate);
-
+    console.log({ cardID, location });
+    const record = await saveStatus(cardID, location);
     if (record) {
       return res.status(200).json(record);
     }
@@ -28,7 +34,75 @@ async function httpAddStatus(req, res) {
   }
 }
 
+async function httpGetStatusByKeyword(req, res) {
+  try {
+    const { skip, limit } = getPagination(req.query);
+    const { keyword } = req.params;
+    const status = await getStatusByKeyword({ keyword, skip, limit });
+    if (!status || status.length == 0) {
+      return res.status(404).json({
+        message: `There are no matching records with the keyword: ${keyword}`,
+      });
+    }
+
+    return res.status(200).json(status);
+  } catch (error) {
+    return res.status(404).json({
+      ...error,
+      message: `Sorry, we couldn't handle your request, try it later`,
+    });
+  }
+}
+
+async function httpGetStatusToExport(req, res) {
+  try {
+    const { keyword } = req.query;
+    const status = await getStatusToExport({ keyword });
+    if (!status || status.length == 0) {
+      return res.status(404).json({
+        message: `There are no matching records with the keyword: ${keyword}`,
+      });
+    }
+
+    return res.status(200).json(status);
+  } catch (error) {
+    return res.status(404).json({
+      ...error,
+      message: `Sorry, we couldn't handle your request, try it later`,
+    });
+  }
+}
+
+async function httpGetStatusByDate(req, res) {
+  try {
+    const { skip, limit } = getPagination(req.query);
+    const { minDate, maxDate, keyword } = req.body;
+    const status = await getStatusByDate({
+      minDate,
+      maxDate,
+      keyword,
+      skip,
+      limit,
+    });
+
+    if (!status || status.length == 0) {
+      return res.status(404).json({
+        message: `There are no matching records with the keyword: ${keyword}`,
+      });
+    }
+
+    return res.status(200).json(status);
+  } catch (error) {
+    return res.status(404).json({
+      ...error,
+      message: `Sorry, we couldn't handle your request, try it later`,
+    });
+  }
+}
 module.exports = {
   httpGetAllStatus,
   httpAddStatus,
+  httpGetStatusByKeyword,
+  httpGetStatusToExport,
+  httpGetStatusByDate,
 };
