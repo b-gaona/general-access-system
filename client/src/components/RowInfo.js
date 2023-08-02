@@ -13,7 +13,6 @@ import useMessagesContext from "../hooks/use-messages-context";
 
 import { useEffect } from "react";
 import useUsersContext from "../hooks/use-users-context";
-import axios from "axios";
 
 function RowInfo({ config, user }) {
   const [showEditModal, setShowEditModal] = useState(false);
@@ -22,6 +21,7 @@ function RowInfo({ config, user }) {
 
   const [editUser, setEditUser] = useState(false);
   const [deleteUser, setDeleteUser] = useState(false);
+  const [cardAssigned, setCardAssigned] = useState(false);
   const [errorMessage, setErrorMessage] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -32,7 +32,7 @@ function RowInfo({ config, user }) {
     ADMIN_LABEL,
   } = useConfigurationContext();
 
-  const { deleteUserById, editUserById } = useUsersContext();
+  const { deleteUserById, editUserById, addCredential } = useUsersContext();
 
   const { USER_MESSAGE, ERROR_MESSAGE } = useMessagesContext();
 
@@ -80,6 +80,7 @@ function RowInfo({ config, user }) {
     setShowCardModal(false);
     setEditUser(false);
     setDeleteUser(false);
+    setCardAssigned(false);
   };
 
   const handleEdit = async (user) => {
@@ -107,15 +108,39 @@ function RowInfo({ config, user }) {
   };
 
   const handleRegisterCard = async () => {
-    try {
-      const res = await axios.get(
-        `http://localhost:8000/v1/users/get/plate/${user.plate}`
-      );
-      console.log(res.data);
-      return true;
-    } catch (error) {
-      return false;
-    }
+    setIsLoading(true);
+    setCardAssigned(false);
+    setErrorMessage(false);
+    //Listen for future events
+    const eventSource = new EventSource(
+      "http://localhost:8000/v1/events/credential"
+    );
+
+    eventSource.onmessage = async function (event) {
+      const eventData = JSON.parse(event.data);
+      //If we want to upsert a new data
+      if (eventData.type === "insert" || eventData.type === "update") {
+        const credentialObj = eventData.data;
+        try {
+          setIsLoading(false);
+          const res = await addCredential(credentialObj._id, user._id);
+          if (res) {
+            setCardAssigned(true);
+          } else {
+            setErrorMessage(ERROR_MESSAGE);
+          }
+          eventSource.close();
+        } catch (error) {
+          setIsLoading(false);
+          setErrorMessage(ERROR_MESSAGE);
+          eventSource.close();
+        }
+      }
+    };
+
+    eventSource.onerror = function () {
+      eventSource.close();
+    };
   };
 
   useEffect(() => {
@@ -191,10 +216,27 @@ function RowInfo({ config, user }) {
     </Modal>
   );
 
+  const showCurrentCredential = user.card_id ? (
+    <div className="text-md text-center font-semibold">
+      <p>Ya cuenta con una credencial este usuario.</p>
+    </div>
+  ) : (
+    false
+  );
+
   const modalCard = (
     <Modal onClose={handleClose}>
-      {deleteUser && USER_MESSAGE.DELETE}
-      {showDeleteModal && errorMessage}
+      {isLoading && (
+        <div>
+          <p className="text-md font-semibold text-center">
+            Por favor escanea la credencial...
+          </p>
+          <Spinner type="loading" />
+        </div>
+      )}
+      {cardAssigned && USER_MESSAGE.CARD}
+      {showCardModal && errorMessage}
+      {!isLoading && !cardAssigned && showCurrentCredential}
       <div className="flex justify-center">
         <img
           src="https://www.pngrepo.com/png/128239/512/id-card.png"
@@ -203,16 +245,22 @@ function RowInfo({ config, user }) {
         />
       </div>
       <p className="text-center">
-        ¿Deseas registrar al usuario '{user.name}' con número de identificación
-        '{user.plate}' a la credencial?
+        ¿Deseas asignar al usuario '{user.name}' con número de identificación '
+        {user.plate}' a la credencial?
       </p>
       <div className="flex justify-around pt-4">
         <Button onClick={handleClose} danger>
           Cancelar
         </Button>
         <Button onClick={handleRegisterCard} primary>
-          Si, quiero registrarla
+          Si, quiero asignar la credencial
         </Button>
+      </div>
+      <div className="m-5">
+        <p className="text-xs">
+          NOTA: Asegúrese de tener el módulo de registro conectado vía Ethernet
+          y USB a su PC. De caso contrario, esta operación no se podrá realizar.
+        </p>
       </div>
     </Modal>
   );
