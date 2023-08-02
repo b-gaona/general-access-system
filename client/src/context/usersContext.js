@@ -16,6 +16,8 @@ function UsersProvider({ children }) {
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [term, setTerm] = useState("");
+  const [dateRange, setDateRange] = useState([null, null]);
+  const [date, setDate] = useState("");
 
   const fetchUsers = async () => {
     if (term === "") {
@@ -36,7 +38,7 @@ function UsersProvider({ children }) {
         }, 150);
       } catch (error) {
         setIsLoading(false);
-        console.log(error);
+        //console.log(error);
       }
     }
   };
@@ -65,14 +67,35 @@ function UsersProvider({ children }) {
         },
       });
       if (res.data) {
-        const updatedUsers = [...users, ...res.data];
+        const updatedUsers = [...users, ...res.data.data];
         setUsers(updatedUsers);
-        return "Add";
+        return res.data.status;
       } else {
-        return "Same";
+        return "empty";
       }
     } catch (error) {
-      return "Error";
+      return "error";
+    }
+  };
+
+  const deleteUsersByCSV = async (selectedFile) => {
+    try {
+      const formData = new FormData();
+      formData.append("file", selectedFile);
+      const res = await axios.post("http://localhost:8000/remove", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      if (res.data) {
+        const updatedUsers = [...users, ...res.data.data];
+        setUsers(updatedUsers);
+        return res.data.status;
+      } else {
+        return "empty";
+      }
+    } catch (error) {
+      return "error";
     }
   };
 
@@ -115,6 +138,32 @@ function UsersProvider({ children }) {
     }
   };
 
+  const addCredential = async (cardID, userID) => {
+    const array = term === "" ? users : filteredUsers;
+    const set = term === "" ? setUsers : setFilteredUsers;
+    try {
+      let editedUser = {};
+
+      const res = await axios.post("http://localhost:8000/v1/users/card", {
+        cardID,
+        userID,
+      });
+
+      const updateUsers = array.map((user) => {
+        if (user._id === userID) {
+          editedUser = JSON.parse(res.request.response);
+          return { ...user, ...res.data };
+        }
+        return user;
+      });
+
+      set(updateUsers);
+      return editedUser;
+    } catch (error) {
+      return false;
+    }
+  };
+
   const valueToShare = {
     users,
     filteredUsers,
@@ -122,6 +171,10 @@ function UsersProvider({ children }) {
     page,
     searchTerm,
     term,
+    dateRange,
+    date,
+    setDate,
+    setDateRange,
     setSearchTerm,
     setIsLoading,
     setFilteredUsers,
@@ -130,9 +183,11 @@ function UsersProvider({ children }) {
     createUser,
     stableFetchUsers,
     createUsersByCSV,
+    deleteUsersByCSV,
     setPage,
     setUsers,
     setTerm,
+    addCredential,
   };
 
   return (

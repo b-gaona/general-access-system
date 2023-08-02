@@ -47,11 +47,11 @@ function ConfigurationProvider({ children }) {
       },
     },
     {
-      label: "Nombre completo",
+      label: "Nombre empezando por apellidos",
       input: {
         type: "text",
         property: "name",
-        placeholder: "ej: Miguel Alberto Marmolejo Zapata",
+        placeholder: "ej: Peréz Galván Miguel Alberto",
       },
     },
     {

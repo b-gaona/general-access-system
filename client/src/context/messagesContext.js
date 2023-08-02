@@ -27,6 +27,11 @@ function MessagesProvider({ children }) {
         Usuario eliminado correctamente
       </h1>
     ),
+    CARD: (
+      <h1 className="text-center text-xl my-3 bg-green-500 text-white py-1 rounded">
+        Credencial asignada correctamente
+      </h1>
+    ),
   };
 
   const IMPORT_MESSAGE = {
@@ -44,10 +49,17 @@ function MessagesProvider({ children }) {
         </h1>
       </div>
     ),
+    INCOMPLETE: (
+      <div className="flex justify-center">
+        <h1 className="text-center text-xl my-3 bg-yellow-500 text-white py-1 rounded w-2/4">
+          El archivo ha sido importado correctamente, excepto las duplicaciones de registros.
+        </h1>
+      </div>
+    ),
     ERROR: (
       <div className="flex justify-center">
         <h1 className="text-center text-xl my-3 bg-red-500 text-white py-1 rounded w-2/4">
-          Error al cargar e importar el archivo
+          Error al cargar e importar el archivo.
         </h1>
       </div>
     ),
