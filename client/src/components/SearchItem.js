@@ -3,27 +3,75 @@ import Button from "./Button";
 import { useCallback, useEffect, useState } from "react";
 import useUsersContext from "../hooks/use-users-context";
 
-function SearchItem({ searchTerm, onClose, page }) {
-  const { filteredUsers, setFilteredUsers, setIsLoading, setPage } = useUsersContext();
+function SearchItem({ searchTerm, onClose, page, collection }) {
+  const {
+    filteredUsers,
+    setFilteredUsers,
+    setIsLoading,
+    setPage,
+    dateRange,
+    setDate,
+    date,
+  } = useUsersContext();
   const [error, setError] = useState(false);
 
   const fetchFilteredUsers = async () => {
     try {
-      const before = filteredUsers;
-      setFilteredUsers([]);
-      setError(false);
-      setIsLoading(true);
-      const res = await axios.get(
-        `http://localhost:8000/v1/users/get/${searchTerm}?page=${page}&limit=15`
-      );
-      setTimeout(() => {
-        if (res.data) {
-          setFilteredUsers(res.data);
-        } else {
-          setFilteredUsers(before);
+      if (collection === "status") {
+        const object = {};
+        const [initialDate, endDate] = dateRange;
+
+        if (searchTerm !== "") {
+          object.keyword = searchTerm;
         }
-        setIsLoading(false);
-      }, 150);
+
+        if (initialDate || endDate) {
+          if (initialDate && endDate) {
+            object.minDate = initialDate;
+            object.maxDate = endDate;
+          } else if (initialDate && !endDate) {
+            object.minDate = initialDate;
+          } else {
+            object.maxDate = endDate;
+          }
+          setDate("date");
+        } else {
+          setDate("");
+        }
+
+        const before = filteredUsers;
+        setFilteredUsers([]);
+        setError(false);
+        setIsLoading(true);
+        const res = await axios.post(
+          `http://localhost:8000/v1/${collection}/get/dates?page=${page}&limit=15`,
+          object
+        );
+        setTimeout(() => {
+          if (res.data) {
+            setFilteredUsers(res.data);
+          } else {
+            setFilteredUsers(before);
+          }
+          setIsLoading(false);
+        }, 150);
+      } else {
+        const before = filteredUsers;
+        setFilteredUsers([]);
+        setError(false);
+        setIsLoading(true);
+        const res = await axios.get(
+          `http://localhost:8000/v1/${collection}/get/${searchTerm}?page=${page}&limit=15`
+        );
+        setTimeout(() => {
+          if (res.data) {
+            setFilteredUsers(res.data);
+          } else {
+            setFilteredUsers(before);
+          }
+          setIsLoading(false);
+        }, 150);
+      }
     } catch (error) {
       setFilteredUsers([]);
       setError(true);
@@ -33,7 +81,11 @@ function SearchItem({ searchTerm, onClose, page }) {
   };
 
   // eslint-disable-next-line
-  const stableFetchFilteredUsers = useCallback(fetchFilteredUsers, [page, searchTerm]);
+  const stableFetchFilteredUsers = useCallback(fetchFilteredUsers, [
+    page,
+    searchTerm,
+    date,
+  ]);
 
   useEffect(() => {
     stableFetchFilteredUsers();
