@@ -7,6 +7,7 @@ const roleRouter = require("./role/role.router");
 const departmentRouter = require("./department/department.router");
 const eventRouter = require("./events/events.router");
 const statusRouter = require("./status/status.router");
+const credentialRouter = require("./credential/credential.router");
 
 const api = express.Router();
 
@@ -15,6 +16,7 @@ const endpoints = {
     add: "POST /users/add",
     getAll: "GET /users",
     getByKeyword: "GET /users/get/Keyword",
+    assignCard: "POST /users/card",
   },
   carrers: {
     add: "GET /careers/add?career=CareerName&areas=AreasSeparatedByCommaAndSpace",
@@ -37,6 +39,10 @@ const endpoints = {
     add: "GET /status/add?plate=plate",
     getAll: "GET /status",
   },
+  credential: {
+    add: "GET /credentials/add/CredentialID",
+    getAll: "GET /credentials",
+  },
   events: "GET /events",
 };
 
@@ -47,6 +53,8 @@ api.use("/roles", roleRouter);
 api.use("/departments", departmentRouter);
 api.use("/events", eventRouter);
 api.use("/status", statusRouter);
+api.use("/credentials", credentialRouter);
+
 api.use("/", (req, res) => {
   return res.status(200).json(endpoints);
 });
