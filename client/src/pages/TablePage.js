@@ -7,21 +7,30 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Paginator from "../components/Paginator";
 import useUsersContext from "../hooks/use-users-context";
+import Skeleton from "../components/Skeleton";
+import SearchBar from "../components/SearchBar";
+import DownloadButton from "../components/DownloadButton";
+import BasicDateRangePicker from "../components/DatePicker";
 
-function TablePage(params) {
+function TablePage() {
   const [data, setData] = useState([]);
-  const { page } = useUsersContext();
+  const { page, setIsLoading, isLoading, filteredUsers, term, date } =
+    useUsersContext();
 
   function fetchData() {
+    setIsLoading(true);
     //Get all the data
     axios
       .get(`http://localhost:8000/v1/status?page=${page}&limit=15`)
       .then((res) => {
-        setData(res.data);
-        console.log(res.data);
+        setTimeout(() => {
+          setIsLoading(false);
+          setData(res.data);
+        }, 150);
       });
   }
 
+  // eslint-disable-next-line
   const stableFetch = useCallback(fetchData, [page]);
 
   useEffect(() => {
@@ -73,6 +82,11 @@ function TablePage(params) {
       sortValue: (data) => data.user.name,
     },
     {
+      label: "Localización",
+      render: (data) => data.location,
+      sortValue: (data) => data.location,
+    },
+    {
       label: "Fecha",
       render: (data) => moment(data.date).local("es").format("LLL"),
       sortValue: (data) => data.date,
@@ -81,11 +95,11 @@ function TablePage(params) {
       label: "Status",
       render: (data) =>
         data.status ? (
-          <h1 className="bg-green-600 w-full py-1 text-center text-white border-green-800 border-2">
+          <h1 className="bg-green-600 w-full py-1 text-center text-white border-green-800 border-2 px-2">
             Entrada
           </h1>
         ) : (
-          <h1 className="bg-red-600 w-full py-1 text-center text-white border-red-800 border-2">
+          <h1 className="bg-red-600 w-full py-1 text-center text-white border-red-800 border-2 px-2">
             Salida
           </h1>
         ),
@@ -100,13 +114,27 @@ function TablePage(params) {
   return (
     <div className="flex flex-col justify-between min-h-screen">
       <Header />
-      <h1 className="text-3xl uppercase text-center font-semibold">
-        Tabla de entradas y salidas de usuarios
+      <h1 className="text-3xl uppercase text-center font-semibold mb-4">
+        Tabla de las entradas de usuarios
       </h1>
-      <div className="mx-16">
+      <div className="mx-16 flex items-center flex-col">
+        <div className="flex gap-7 justify-center items-start w-full p-2">
+          <BasicDateRangePicker />
+          <SearchBar collection="status" />
+        </div>
         <div className="flex flex-col justify-center items-center w-full">
-          <SortableTable data={data} config={config} keyFn={keyFn} />
+          <SortableTable
+            data={term !== "" || date !== "" ? filteredUsers : data}
+            config={config}
+            keyFn={keyFn}
+            loader={
+              isLoading && <Skeleton times={10} className="h-12 w-full" />
+            }
+          />
           <Paginator />
+        </div>
+        <div className="flex justify-end w-full">
+          <DownloadButton></DownloadButton>
         </div>
       </div>
       <Footer />
