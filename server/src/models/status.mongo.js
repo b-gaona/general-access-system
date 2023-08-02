@@ -9,6 +9,7 @@ const statusSchema = new mongoose.Schema({
   user: {
     type: userSchema,
     required: true,
+    index: false,
   },
   location: {
     type: String,
