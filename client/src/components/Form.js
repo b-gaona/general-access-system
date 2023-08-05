@@ -16,7 +16,7 @@ function Form({ config, objectConfig, onSubmit, children, buttonInfo }) {
     ADMIN_LABEL,
     DEPARTMENT_PROPERTY,
     TEACHER_LABEL,
-    BASE_URL
+    BASE_URL,
   } = useConfigurationContext();
 
   useEffect(() => {

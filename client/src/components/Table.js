@@ -39,7 +39,9 @@ function Table({ data, config, keyFn, loader, showInfo }) {
       );
     });
 
-    const content = isExpanded && showInfo && <RowInfo config={config} user={row} />;
+    const content = isExpanded && showInfo && (
+      <RowInfo config={config} user={row} />
+    );
 
     return (
       <Fragment key={keyFn(row)}>

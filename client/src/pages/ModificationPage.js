@@ -29,7 +29,7 @@ function ModificationPage() {
       </h1>
       <div className="mx-16 flex items-center flex-col">
         <div className="flex gap-7 justify-center items-center w-full p-2">
-          <SearchBar collection="users"/>
+          <SearchBar collection="users" />
         </div>
         <div className="flex flex-col justify-center items-center w-full">
           <SortableTable

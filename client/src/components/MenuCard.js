@@ -13,7 +13,7 @@ function MenuCard({ img, alt, heading, to }) {
       onClick={handleClick}
     >
       <div>
-        <img src={img} alt={alt} className="rounded-t-lg"/>
+        <img src={img} alt={alt} className="rounded-t-lg" />
       </div>
       <div className="flex items-center justify-center p-6">
         <h3 className="text-3xl">{heading}</h3>

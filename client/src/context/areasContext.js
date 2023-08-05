@@ -5,7 +5,7 @@ import useConfigurationContext from "../hooks/use-configuration-context";
 const AreasContext = createContext();
 
 function AreasProvider({ children }) {
-  const {BASE_URL} = useConfigurationContext();
+  const { BASE_URL } = useConfigurationContext();
   const [areas, setAreas] = useState([]);
 
   const fetchAreas = async () => {

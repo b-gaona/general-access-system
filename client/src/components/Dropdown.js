@@ -22,7 +22,7 @@ function Dropdown({ options, currentValue, onChange, property, placeholder }) {
 
   return (
     <div>
-      <Panel className="bg-white w-full" style={{padding: "0px"}}>
+      <Panel className="bg-white w-full" style={{ padding: "0px" }}>
         <select
           onChange={(evt) =>
             handleOptionClick({

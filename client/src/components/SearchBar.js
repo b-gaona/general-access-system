@@ -20,7 +20,7 @@ function SearchBar({ collection }) {
     setIsLoading,
     setDate,
   } = useUsersContext();
-  const {BASE_URL} = useConfigurationContext();
+  const { BASE_URL } = useConfigurationContext();
 
   const [show, setShow] = useState(false);
 

@@ -52,7 +52,8 @@ function MessagesProvider({ children }) {
     INCOMPLETE: (
       <div className="flex justify-center">
         <h1 className="text-center text-xl my-3 bg-yellow-500 text-white py-1 rounded w-2/4">
-          El archivo ha sido importado correctamente, excepto las duplicaciones de registros.
+          El archivo ha sido importado correctamente, excepto las duplicaciones
+          de registros.
         </h1>
       </div>
     ),

@@ -5,7 +5,7 @@ import useConfigurationContext from "../hooks/use-configuration-context";
 const CareersContext = createContext();
 
 function CareersProvider({ children }) {
-  const {BASE_URL} = useConfigurationContext();
+  const { BASE_URL } = useConfigurationContext();
   const [careers, setCareers] = useState([]);
 
   const fetchCareers = async () => {

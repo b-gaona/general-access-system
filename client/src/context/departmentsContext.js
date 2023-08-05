@@ -5,7 +5,7 @@ import useConfigurationContext from "../hooks/use-configuration-context";
 const DepartmentsContext = createContext();
 
 function DepartmentsProvider({ children }) {
-  const {BASE_URL} = useConfigurationContext();
+  const { BASE_URL } = useConfigurationContext();
   const [departments, setDepartments] = useState([]);
 
   const fetchDepartments = async () => {

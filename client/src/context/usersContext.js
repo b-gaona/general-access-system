@@ -11,7 +11,7 @@ import useConfigurationContext from "../hooks/use-configuration-context";
 const UsersContext = createContext();
 
 function UsersProvider({ children }) {
-  const {BASE_URL} = useConfigurationContext();
+  const { BASE_URL } = useConfigurationContext();
   const [isLoading, setIsLoading] = useState(false);
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
@@ -121,10 +121,7 @@ function UsersProvider({ children }) {
     const set = term === "" ? setUsers : setFilteredUsers;
     try {
       let editedUser = {};
-      const res = await axios.put(
-        `${BASE_URL}/v1/users/update/${id}`,
-        user
-      );
+      const res = await axios.put(`${BASE_URL}/v1/users/update/${id}`, user);
       const updateUsers = array.map((user) => {
         if (user._id === id) {
           editedUser = JSON.parse(res.request.response);

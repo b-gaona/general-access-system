@@ -14,7 +14,7 @@ function SearchItem({ searchTerm, onClose, page, collection }) {
     setDate,
     date,
   } = useUsersContext();
-  const {BASE_URL} = useConfigurationContext();
+  const { BASE_URL } = useConfigurationContext();
   const [error, setError] = useState(false);
 
   const fetchFilteredUsers = async () => {

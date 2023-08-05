@@ -5,7 +5,7 @@ import useConfigurationContext from "../hooks/use-configuration-context";
 const RolesContext = createContext();
 
 function RolesProvider({ children }) {
-  const {BASE_URL} = useConfigurationContext();
+  const { BASE_URL } = useConfigurationContext();
   const [roles, setRoles] = useState([]);
 
   const fetchRoles = async () => {

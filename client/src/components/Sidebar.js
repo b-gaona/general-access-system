@@ -49,7 +49,9 @@ function Sidebar() {
   return (
     <div className="sticky top-0 flex flex-col items-start">
       {renderedLinks}
-      <Button className="w-full" primary>Filtrar</Button>
+      <Button className="w-full" primary>
+        Filtrar
+      </Button>
     </div>
   );
 }

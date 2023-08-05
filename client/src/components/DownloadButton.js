@@ -11,7 +11,7 @@ import "moment/locale/es";
 
 const DownloadButton = () => {
   const { term } = useUsersContext();
-  const {BASE_URL} = useConfigurationContext();
+  const { BASE_URL } = useConfigurationContext();
   const handleDownload = async (evt) => {
     evt.preventDefault(); // Prevent the default button click behavior
 
@@ -22,7 +22,7 @@ const DownloadButton = () => {
         `${BASE_URL}/v1/status/export${keyword}`
       );
       const dataArray = response.data; // Assuming the response is an array
-        console.log(dataArray);
+      console.log(dataArray);
       if (!Array.isArray(dataArray) || dataArray.length === 0) {
         console.error("Invalid data format or empty array.");
         return;

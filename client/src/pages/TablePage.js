@@ -14,7 +14,7 @@ import BasicDateRangePicker from "../components/DatePicker";
 import useConfigurationContext from "../hooks/use-configuration-context";
 
 function TablePage() {
-  const {BASE_URL} = useConfigurationContext();
+  const { BASE_URL } = useConfigurationContext();
   const [data, setData] = useState([]);
   const { page, setIsLoading, isLoading, filteredUsers, term, date } =
     useUsersContext();
@@ -22,14 +22,12 @@ function TablePage() {
   function fetchData() {
     setIsLoading(true);
     //Get all the data
-    axios
-      .get(`${BASE_URL}/v1/status?page=${page}&limit=15`)
-      .then((res) => {
-        setTimeout(() => {
-          setIsLoading(false);
-          setData(res.data);
-        }, 150);
-      });
+    axios.get(`${BASE_URL}/v1/status?page=${page}&limit=15`).then((res) => {
+      setTimeout(() => {
+        setIsLoading(false);
+        setData(res.data);
+      }, 150);
+    });
   }
 
   // eslint-disable-next-line
