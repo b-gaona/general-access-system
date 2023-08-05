@@ -1,11 +1,10 @@
 import { createContext, useCallback, useState } from "react";
 import axios from "axios";
-import useConfigurationContext from "../hooks/use-configuration-context";
+import { BASE_URL } from "../config";
 
 const DepartmentsContext = createContext();
 
 function DepartmentsProvider({ children }) {
-  const { BASE_URL } = useConfigurationContext();
   const [departments, setDepartments] = useState([]);
 
   const fetchDepartments = async () => {

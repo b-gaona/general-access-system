@@ -6,12 +6,11 @@ import { DepartmentsProvider } from "./departmentsContext";
 import { RolesProvider } from "./rolesContext";
 import { ConfigurationProvider } from "./configurationContext";
 import { MessagesProvider } from "./messagesContext";
-import useConfigurationContext from "../hooks/use-configuration-context";
+import { BASE_URL } from "../config";
 
 const UsersContext = createContext();
 
 function UsersProvider({ children }) {
-  const { BASE_URL } = useConfigurationContext();
   const [isLoading, setIsLoading] = useState(false);
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);

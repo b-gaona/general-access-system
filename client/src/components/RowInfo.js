@@ -10,6 +10,7 @@ import Spinner from "./Spinner";
 
 import useConfigurationContext from "../hooks/use-configuration-context";
 import useMessagesContext from "../hooks/use-messages-context";
+import { BASE_URL } from "../config";
 
 import { useEffect } from "react";
 import useUsersContext from "../hooks/use-users-context";
@@ -30,7 +31,6 @@ function RowInfo({ config, user }) {
     TEACHER_LABEL,
     STUDENT_LABEL,
     ADMIN_LABEL,
-    BASE_URL,
   } = useConfigurationContext();
 
   const { deleteUserById, editUserById, addCredential } = useUsersContext();

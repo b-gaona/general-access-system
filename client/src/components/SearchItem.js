@@ -2,7 +2,7 @@ import axios from "axios";
 import Button from "./Button";
 import { useCallback, useEffect, useState } from "react";
 import useUsersContext from "../hooks/use-users-context";
-import useConfigurationContext from "../hooks/use-configuration-context";
+import { BASE_URL } from "../config";
 
 function SearchItem({ searchTerm, onClose, page, collection }) {
   const {
@@ -14,7 +14,6 @@ function SearchItem({ searchTerm, onClose, page, collection }) {
     setDate,
     date,
   } = useUsersContext();
-  const { BASE_URL } = useConfigurationContext();
   const [error, setError] = useState(false);
 
   const fetchFilteredUsers = async () => {

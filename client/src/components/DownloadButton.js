@@ -3,7 +3,7 @@ import axios from "axios";
 import { utils, write } from "xlsx";
 import { saveAs } from "file-saver";
 import useUsersContext from "../hooks/use-users-context";
-import useConfigurationContext from "../hooks/use-configuration-context";
+import { BASE_URL } from "../config";
 import Button from "./Button";
 import { SiMicrosoftexcel } from "react-icons/si";
 import moment from "moment";
@@ -11,7 +11,6 @@ import "moment/locale/es";
 
 const DownloadButton = () => {
   const { term } = useUsersContext();
-  const { BASE_URL } = useConfigurationContext();
   const handleDownload = async (evt) => {
     evt.preventDefault(); // Prevent the default button click behavior
 

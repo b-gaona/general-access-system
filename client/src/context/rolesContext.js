@@ -1,11 +1,10 @@
 import { createContext, useCallback, useState } from "react";
 import axios from "axios";
-import useConfigurationContext from "../hooks/use-configuration-context";
+import { BASE_URL } from "../config";
 
 const RolesContext = createContext();
 
 function RolesProvider({ children }) {
-  const { BASE_URL } = useConfigurationContext();
   const [roles, setRoles] = useState([]);
 
   const fetchRoles = async () => {

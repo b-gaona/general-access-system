@@ -1,11 +1,10 @@
 import { createContext, useCallback, useState } from "react";
 import axios from "axios";
-import useConfigurationContext from "../hooks/use-configuration-context";
+import { BASE_URL } from "../config";
 
 const CareersContext = createContext();
 
 function CareersProvider({ children }) {
-  const { BASE_URL } = useConfigurationContext();
   const [careers, setCareers] = useState([]);
 
   const fetchCareers = async () => {

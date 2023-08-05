@@ -4,6 +4,8 @@ import Button from "../components/Button";
 import Input from "../components/Input";
 import Dropdown from "../components/Dropdown";
 import useConfigurationContext from "../hooks/use-configuration-context";
+import { BASE_URL } from "../config";
+
 
 function Form({ config, objectConfig, onSubmit, children, buttonInfo }) {
   const [user, setUser] = useState(objectConfig);
@@ -16,7 +18,6 @@ function Form({ config, objectConfig, onSubmit, children, buttonInfo }) {
     ADMIN_LABEL,
     DEPARTMENT_PROPERTY,
     TEACHER_LABEL,
-    BASE_URL,
   } = useConfigurationContext();
 
   useEffect(() => {

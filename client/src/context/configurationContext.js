@@ -4,6 +4,8 @@ import useCareersContext from "../hooks/use-careers-context";
 import useDepartmentsContext from "../hooks/use-departments-context";
 import moment from "moment";
 import "moment/locale/es";
+import { BASE_URL } from "../config";
+
 
 const ConfigurationContext = createContext();
 
@@ -11,7 +13,6 @@ function ConfigurationProvider({ children }) {
   const { stableFetchRoles, roles } = useRolesContext();
   const { stableFetchCareers, careers } = useCareersContext();
   const { stableFetchDepartments, departments } = useDepartmentsContext();
-  const BASE_URL = "http://localhost:8000";
 
   useEffect(() => {
     stableFetchRoles();

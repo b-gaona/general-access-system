@@ -11,10 +11,9 @@ import Skeleton from "../components/Skeleton";
 import SearchBar from "../components/SearchBar";
 import DownloadButton from "../components/DownloadButton";
 import BasicDateRangePicker from "../components/DatePicker";
-import useConfigurationContext from "../hooks/use-configuration-context";
+import { BASE_URL } from "../config";
 
 function TablePage() {
-  const { BASE_URL } = useConfigurationContext();
   const [data, setData] = useState([]);
   const { page, setIsLoading, isLoading, filteredUsers, term, date } =
     useUsersContext();

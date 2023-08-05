@@ -4,7 +4,7 @@ import Input from "./Input";
 import SearchItem from "./SearchItem";
 import useUsersContext from "../hooks/use-users-context";
 import axios from "axios";
-import useConfigurationContext from "../hooks/use-configuration-context";
+import { BASE_URL } from "../config";
 
 function SearchBar({ collection }) {
   const {
@@ -20,7 +20,6 @@ function SearchBar({ collection }) {
     setIsLoading,
     setDate,
   } = useUsersContext();
-  const { BASE_URL } = useConfigurationContext();
 
   const [show, setShow] = useState(false);
 
