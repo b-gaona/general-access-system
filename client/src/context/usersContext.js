@@ -6,10 +6,12 @@ import { DepartmentsProvider } from "./departmentsContext";
 import { RolesProvider } from "./rolesContext";
 import { ConfigurationProvider } from "./configurationContext";
 import { MessagesProvider } from "./messagesContext";
+import useConfigurationContext from "../hooks/use-configuration-context";
 
 const UsersContext = createContext();
 
 function UsersProvider({ children }) {
+  const {BASE_URL} = useConfigurationContext();
   const [isLoading, setIsLoading] = useState(false);
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
@@ -26,7 +28,7 @@ function UsersProvider({ children }) {
         setIsLoading(true);
         setUsers([]);
         const res = await axios.get(
-          `http://localhost:8000/v1/users?page=${page}&limit=15`
+          `${BASE_URL}/v1/users?page=${page}&limit=15`
         );
         setTimeout(() => {
           if (res.data) {
@@ -48,7 +50,7 @@ function UsersProvider({ children }) {
 
   const createUser = async (user) => {
     try {
-      const res = await axios.post("http://localhost:8000/v1/users/add", user);
+      const res = await axios.post(`${BASE_URL}/v1/users/add`, user);
       const updatedUsers = [...users, res.data];
       setUsers(updatedUsers);
       return true;
@@ -61,7 +63,7 @@ function UsersProvider({ children }) {
     try {
       const formData = new FormData();
       formData.append("file", selectedFile);
-      const res = await axios.post("http://localhost:8000/upload", formData, {
+      const res = await axios.post(`${BASE_URL}/upload`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -82,7 +84,7 @@ function UsersProvider({ children }) {
     try {
       const formData = new FormData();
       formData.append("file", selectedFile);
-      const res = await axios.post("http://localhost:8000/remove", formData, {
+      const res = await axios.post(`${BASE_URL}/remove`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -103,7 +105,7 @@ function UsersProvider({ children }) {
     const array = term === "" ? users : filteredUsers;
     const set = term === "" ? setUsers : setFilteredUsers;
     try {
-      await axios.delete(`http://localhost:8000/v1/users/delete/${id}`);
+      await axios.delete(`${BASE_URL}/v1/users/delete/${id}`);
       const updatedUsers = array.filter((user) => {
         return user._id !== id;
       });
@@ -120,7 +122,7 @@ function UsersProvider({ children }) {
     try {
       let editedUser = {};
       const res = await axios.put(
-        `http://localhost:8000/v1/users/update/${id}`,
+        `${BASE_URL}/v1/users/update/${id}`,
         user
       );
       const updateUsers = array.map((user) => {
@@ -144,7 +146,7 @@ function UsersProvider({ children }) {
     try {
       let editedUser = {};
 
-      const res = await axios.post("http://localhost:8000/v1/users/card", {
+      const res = await axios.post(`${BASE_URL}/v1/users/card`, {
         cardID,
         userID,
       });

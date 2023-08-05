@@ -4,6 +4,7 @@ import Input from "./Input";
 import SearchItem from "./SearchItem";
 import useUsersContext from "../hooks/use-users-context";
 import axios from "axios";
+import useConfigurationContext from "../hooks/use-configuration-context";
 
 function SearchBar({ collection }) {
   const {
@@ -19,6 +20,8 @@ function SearchBar({ collection }) {
     setIsLoading,
     setDate,
   } = useUsersContext();
+  const {BASE_URL} = useConfigurationContext();
+
   const [show, setShow] = useState(false);
 
   const handleSearchTermChange = ({ text }) => {
@@ -59,7 +62,7 @@ function SearchBar({ collection }) {
         setFilteredUsers([]);
         setIsLoading(true);
         const res = await axios.post(
-          `http://localhost:8000/v1/${collection}/get/dates?page=${page}&limit=15`,
+          `${BASE_URL}/v1/${collection}/get/dates?page=${page}&limit=15`,
           object
         );
 
@@ -106,7 +109,7 @@ function SearchBar({ collection }) {
       setFilteredUsers([]);
       setIsLoading(true);
       const res = await axios.post(
-        `http://localhost:8000/v1/${collection}/get/dates?page=${page}&limit=15`,
+        `${BASE_URL}/v1/${collection}/get/dates?page=${page}&limit=15`,
         object
       );
 

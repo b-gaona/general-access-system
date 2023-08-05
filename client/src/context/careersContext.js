@@ -1,13 +1,15 @@
 import { createContext, useCallback, useState } from "react";
 import axios from "axios";
+import useConfigurationContext from "../hooks/use-configuration-context";
 
 const CareersContext = createContext();
 
 function CareersProvider({ children }) {
+  const {BASE_URL} = useConfigurationContext();
   const [careers, setCareers] = useState([]);
 
   const fetchCareers = async () => {
-    axios.get("http://localhost:8000/v1/careers").then((res) => {
+    axios.get(`${BASE_URL}/v1/careers`).then((res) => {
       const data = res.data;
       const currentArray = data.map((career) => {
         return { label: career.career, value: career._id };
@@ -19,7 +21,7 @@ function CareersProvider({ children }) {
   const stableFetchCareers = useCallback(fetchCareers, []);
 
   const createCareer = async (title) => {
-    const res = await axios.post("http://localhost:8000/v1/careers", {
+    const res = await axios.post(`${BASE_URL}/v1/careers`, {
       title,
     });
 
@@ -28,7 +30,7 @@ function CareersProvider({ children }) {
   };
 
   const deleteCareerById = async (id) => {
-    await axios.delete(`http://localhost:8000/v1/careers/${id}`);
+    await axios.delete(`${BASE_URL}/v1/careers/${id}`);
     const updatedCareers = careers.filter((career) => {
       return career.id !== id;
     });
@@ -36,7 +38,7 @@ function CareersProvider({ children }) {
   };
 
   const editCareerById = async (id, title) => {
-    const res = await axios.put(`http://localhost:8000/v1/careers/${id}`, {
+    const res = await axios.put(`${BASE_URL}/v1/careers/${id}`, {
       title,
     });
     const updateCareers = careers.map((career) => {

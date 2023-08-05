@@ -16,6 +16,7 @@ function Form({ config, objectConfig, onSubmit, children, buttonInfo }) {
     ADMIN_LABEL,
     DEPARTMENT_PROPERTY,
     TEACHER_LABEL,
+    BASE_URL
   } = useConfigurationContext();
 
   useEffect(() => {
@@ -23,7 +24,7 @@ function Form({ config, objectConfig, onSubmit, children, buttonInfo }) {
     if (!Object.values(objectConfig).some((element) => !element)) {
       if (objectConfig.area) {
         axios
-          .get(`http://localhost:8000/v1/careers/get/${objectConfig.career}`)
+          .get(`${BASE_URL}/v1/careers/get/${objectConfig.career}`)
           .then((res) => {
             const data = res.data.areas;
             const renderedData = data.map(({ area, _id }) => {
@@ -50,7 +51,7 @@ function Form({ config, objectConfig, onSubmit, children, buttonInfo }) {
     //This conditional is needed if you want to do a dependent dropdown, the "career" property is of the independent dropdown
     if (property === CAREER_PROPERTY) {
       axios
-        .get(`http://localhost:8000/v1/careers/get/${value}`)
+        .get(`${BASE_URL}/v1/careers/get/${value}`)
         .then((res) => {
           const data = res.data.areas;
           const renderedData = data.map(({ area, _id }) => {

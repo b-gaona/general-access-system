@@ -2,6 +2,7 @@ import axios from "axios";
 import Button from "./Button";
 import { useCallback, useEffect, useState } from "react";
 import useUsersContext from "../hooks/use-users-context";
+import useConfigurationContext from "../hooks/use-configuration-context";
 
 function SearchItem({ searchTerm, onClose, page, collection }) {
   const {
@@ -13,6 +14,7 @@ function SearchItem({ searchTerm, onClose, page, collection }) {
     setDate,
     date,
   } = useUsersContext();
+  const {BASE_URL} = useConfigurationContext();
   const [error, setError] = useState(false);
 
   const fetchFilteredUsers = async () => {
@@ -44,7 +46,7 @@ function SearchItem({ searchTerm, onClose, page, collection }) {
         setError(false);
         setIsLoading(true);
         const res = await axios.post(
-          `http://localhost:8000/v1/${collection}/get/dates?page=${page}&limit=15`,
+          `${BASE_URL}/v1/${collection}/get/dates?page=${page}&limit=15`,
           object
         );
         setTimeout(() => {
@@ -61,7 +63,7 @@ function SearchItem({ searchTerm, onClose, page, collection }) {
         setError(false);
         setIsLoading(true);
         const res = await axios.get(
-          `http://localhost:8000/v1/${collection}/get/${searchTerm}?page=${page}&limit=15`
+          `${BASE_URL}/v1/${collection}/get/${searchTerm}?page=${page}&limit=15`
         );
         setTimeout(() => {
           if (res.data) {

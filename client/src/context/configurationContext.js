@@ -11,6 +11,7 @@ function ConfigurationProvider({ children }) {
   const { stableFetchRoles, roles } = useRolesContext();
   const { stableFetchCareers, careers } = useCareersContext();
   const { stableFetchDepartments, departments } = useDepartmentsContext();
+  const BASE_URL = "http://localhost:8000";
 
   useEffect(() => {
     stableFetchRoles();
@@ -205,6 +206,7 @@ function ConfigurationProvider({ children }) {
   };
 
   const valuesToShare = {
+    BASE_URL,
     config,
     objectConfig,
     renderedConfig,

@@ -1,13 +1,15 @@
 import { createContext, useCallback, useState } from "react";
 import axios from "axios";
+import useConfigurationContext from "../hooks/use-configuration-context";
 
 const RolesContext = createContext();
 
 function RolesProvider({ children }) {
+  const {BASE_URL} = useConfigurationContext();
   const [roles, setRoles] = useState([]);
 
   const fetchRoles = async () => {
-    axios.get("http://localhost:8000/v1/roles").then((res) => {
+    axios.get(`${BASE_URL}/v1/roles`).then((res) => {
       const data = res.data;
       const currentArray = data.map((role) => {
         return { label: role.role, value: role._id };
@@ -19,7 +21,7 @@ function RolesProvider({ children }) {
   const stableFetchRoles = useCallback(fetchRoles, []);
 
   const createRole = async (title) => {
-    const res = await axios.post("http://localhost:8000/v1/roles", {
+    const res = await axios.post(`${BASE_URL}/v1/roles`, {
       title,
     });
 
@@ -28,7 +30,7 @@ function RolesProvider({ children }) {
   };
 
   const deleteRoleById = async (id) => {
-    await axios.delete(`http://localhost:8000/v1/roles/${id}`);
+    await axios.delete(`${BASE_URL}/v1/roles/${id}`);
     const updatedRoles = roles.filter((role) => {
       return role.id !== id;
     });
@@ -36,7 +38,7 @@ function RolesProvider({ children }) {
   };
 
   const editRoleById = async (id, title) => {
-    const res = await axios.put(`http://localhost:8000/v1/roles/${id}`, {
+    const res = await axios.put(`${BASE_URL}/v1/roles/${id}`, {
       title,
     });
     const updateRoles = roles.map((role) => {

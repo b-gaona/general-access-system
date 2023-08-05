@@ -1,13 +1,15 @@
 import { createContext, useCallback, useState } from "react";
 import axios from "axios";
+import useConfigurationContext from "../hooks/use-configuration-context";
 
 const DepartmentsContext = createContext();
 
 function DepartmentsProvider({ children }) {
+  const {BASE_URL} = useConfigurationContext();
   const [departments, setDepartments] = useState([]);
 
   const fetchDepartments = async () => {
-    axios.get("http://localhost:8000/v1/departments").then((res) => {
+    axios.get(`${BASE_URL}/v1/departments`).then((res) => {
       const data = res.data;
       const currentArray = data.map((department) => {
         return { label: department.department, value: department._id };
@@ -19,7 +21,7 @@ function DepartmentsProvider({ children }) {
   const stableFetchDepartments = useCallback(fetchDepartments, []);
 
   const createDepartment = async (title) => {
-    const res = await axios.post("http://localhost:8000/v1/departments", {
+    const res = await axios.post(`${BASE_URL}/v1/departments`, {
       title,
     });
 
@@ -28,7 +30,7 @@ function DepartmentsProvider({ children }) {
   };
 
   const deleteDepartmentById = async (id) => {
-    await axios.delete(`http://localhost:8000/v1/departments/${id}`);
+    await axios.delete(`${BASE_URL}/v1/departments/${id}`);
     const updatedDepartments = departments.filter((department) => {
       return department.id !== id;
     });
@@ -36,7 +38,7 @@ function DepartmentsProvider({ children }) {
   };
 
   const editDepartmentById = async (id, title) => {
-    const res = await axios.put(`http://localhost:8000/v1/departments/${id}`, {
+    const res = await axios.put(`${BASE_URL}/v1/departments/${id}`, {
       title,
     });
     const updateDepartments = departments.map((department) => {

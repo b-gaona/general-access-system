@@ -1,20 +1,22 @@
 import { createContext, useCallback, useState } from "react";
 import axios from "axios";
+import useConfigurationContext from "../hooks/use-configuration-context";
 
 const AreasContext = createContext();
 
 function AreasProvider({ children }) {
+  const {BASE_URL} = useConfigurationContext();
   const [areas, setAreas] = useState([]);
 
   const fetchAreas = async () => {
-    const res = await axios.get("http://localhost:8000/v1/areas");
+    const res = await axios.get(`${BASE_URL}/v1/areas`);
     setAreas(res.data);
   };
 
   const stableFetchAreas = useCallback(fetchAreas, []);
 
   const createdArea = async (title) => {
-    const res = await axios.post("http://localhost:8000/v1/areas", {
+    const res = await axios.post(`${BASE_URL}/v1/areas`, {
       title,
     });
 
@@ -23,7 +25,7 @@ function AreasProvider({ children }) {
   };
 
   const deletedAreaById = async (id) => {
-    await axios.delete(`http://localhost:8000/v1/areas/${id}`);
+    await axios.delete(`${BASE_URL}/v1/areas/${id}`);
     const updatedAreas = areas.filter((area) => {
       return area.id !== id;
     });
@@ -31,7 +33,7 @@ function AreasProvider({ children }) {
   };
 
   const editdAreaById = async (id, title) => {
-    const res = await axios.put(`http://localhost:8000/v1/areas/${id}`, {
+    const res = await axios.put(`${BASE_URL}/v1/areas/${id}`, {
       title,
     });
     const updateAreas = areas.map((area) => {

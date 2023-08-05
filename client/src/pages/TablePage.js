@@ -11,8 +11,10 @@ import Skeleton from "../components/Skeleton";
 import SearchBar from "../components/SearchBar";
 import DownloadButton from "../components/DownloadButton";
 import BasicDateRangePicker from "../components/DatePicker";
+import useConfigurationContext from "../hooks/use-configuration-context";
 
 function TablePage() {
+  const {BASE_URL} = useConfigurationContext();
   const [data, setData] = useState([]);
   const { page, setIsLoading, isLoading, filteredUsers, term, date } =
     useUsersContext();
@@ -21,7 +23,7 @@ function TablePage() {
     setIsLoading(true);
     //Get all the data
     axios
-      .get(`http://localhost:8000/v1/status?page=${page}&limit=15`)
+      .get(`${BASE_URL}/v1/status?page=${page}&limit=15`)
       .then((res) => {
         setTimeout(() => {
           setIsLoading(false);
@@ -39,7 +41,7 @@ function TablePage() {
 
   useEffect(() => {
     //Listen for future events
-    const eventSource = new EventSource("http://localhost:8000/v1/events");
+    const eventSource = new EventSource(`${BASE_URL}/v1/events`);
 
     function updateMessage(message) {
       //If someone sends many objects in a row

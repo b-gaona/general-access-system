@@ -30,6 +30,7 @@ function RowInfo({ config, user }) {
     TEACHER_LABEL,
     STUDENT_LABEL,
     ADMIN_LABEL,
+    BASE_URL
   } = useConfigurationContext();
 
   const { deleteUserById, editUserById, addCredential } = useUsersContext();
@@ -113,7 +114,7 @@ function RowInfo({ config, user }) {
     setErrorMessage(false);
     //Listen for future events
     const eventSource = new EventSource(
-      "http://localhost:8000/v1/events/credential"
+      `${BASE_URL}/v1/events/credential`
     );
 
     eventSource.onmessage = async function (event) {
