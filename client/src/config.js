@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:8000";
+const BASE_URL = "https://general-access-system.onrender.com/";
 
 export {
   BASE_URL
