@@ -14,7 +14,11 @@ const server = http.createServer(app);
 async function startServer() {
   await mongoConnect();
   
-  server.listen(PORT, IP_ADDRESS, () => {
+  // server.listen(PORT, IP_ADDRESS, () => {
+  //   const address = server.address();
+  //   console.log(`Server listening on ${address.address}:${PORT}`);
+  // });
+  server.listen(PORT, () => {
     const address = server.address();
     console.log(`Server listening on ${address.address}:${PORT}`);
   });
