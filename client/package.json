@@ -21,6 +21,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "build-here": "react-scripts build",
     "build": "set BUILD_PATH=../server/public&& react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
